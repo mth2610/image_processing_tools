@@ -1,9 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:image_processing_tools/image_processing_tools.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -16,8 +14,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   File _image;
-  File _proceessedImage;
-  String _dcimPath;
+  String _proceessedImage;
   bool _isSaving;
   
   @override
@@ -32,14 +29,12 @@ class _MyAppState extends State<MyApp> {
         : ListView(
           children: <Widget>[
             _buildPickedImage(),
-            _dcimPath != null
-            ? Container(
-              padding: const EdgeInsets.all(16),
-              child: Text("DCIM path: $_dcimPath")
-            )
-            : Container(),
             _buildImagePickerButton(),
             _buildConvertToGrey(),
+            _buildConvertToOilpaintingl(),
+            _buildConvertCartoon(),
+            _buildConvertToPencilColor(),
+            _buildConvertToPencilGrey(),
           ],
         ),
       ),
@@ -54,7 +49,7 @@ class _MyAppState extends State<MyApp> {
       decoration: BoxDecoration(
           border: Border.all(width: 1),
           image: DecorationImage(
-            image: FileImage(_proceessedImage),
+            image: FileImage(File(_proceessedImage)),
           )
         )
     )
@@ -92,6 +87,7 @@ class _MyAppState extends State<MyApp> {
               var image = await ImagePicker.pickImage(source: ImageSource.camera);
               setState(() {
                 _image = image;
+                _proceessedImage = null;
               });
             },
           ),
@@ -101,6 +97,7 @@ class _MyAppState extends State<MyApp> {
               var image = await ImagePicker.pickImage(source: ImageSource.gallery);
               setState(() {
                 _image = image;
+                _proceessedImage = null;
               });
             },
           )
@@ -121,7 +118,9 @@ class _MyAppState extends State<MyApp> {
             _isSaving = true;
           });
           if(_image!=null){
-            _proceessedImage = await ImageProcessingTools.convertToGray(_image.path);
+            Directory tempDir = await getTemporaryDirectory();
+            String tempPath = tempDir.path; 
+            _proceessedImage = await ImageProcessingTools.detectCircle(_image.path, tempPath, 500);
             setState(() {
               _isSaving = false;
             });
@@ -134,4 +133,117 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+
+    Widget _buildConvertCartoon(){
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: RaisedButton(
+        color: Colors.blue,
+        textColor: Colors.white,
+        child: Text("Convert to cartoon"),
+        onPressed: ()async{
+          setState(() {
+            _isSaving = true;
+          });
+          if(_image!=null){
+            Directory tempDir = await getTemporaryDirectory();
+            String tempPath = tempDir.path; 
+            _proceessedImage = await ImageProcessingTools.toCartoon(_image.path, tempPath);
+            setState(() {
+              _isSaving = false;
+            });
+          } else {
+            setState(() {
+              _isSaving = false;
+            });
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildConvertToPencilColor(){
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: RaisedButton(
+        color: Colors.blue,
+        textColor: Colors.white,
+        child: Text("Convert to color pencil"),
+        onPressed: ()async{
+          setState(() {
+            _isSaving = true;
+          });
+          if(_image!=null){
+            Directory tempDir = await getTemporaryDirectory();
+            String tempPath = tempDir.path; 
+            _proceessedImage = await ImageProcessingTools.toPencilSketch(_image.path, tempPath, false);
+            setState(() {
+              _isSaving = false;
+            });
+          } else {
+            setState(() {
+              _isSaving = false;
+            });
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildConvertToPencilGrey(){
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: RaisedButton(
+        color: Colors.blue,
+        textColor: Colors.white,
+        child: Text("Convert to grey pencil"),
+        onPressed: ()async{
+          setState(() {
+            _isSaving = true;
+          });
+          if(_image!=null){
+            Directory tempDir = await getTemporaryDirectory();
+            String tempPath = tempDir.path; 
+            _proceessedImage = await ImageProcessingTools.toPencilSketch(_image.path, tempPath, true);
+            setState(() {
+              _isSaving = false;
+            });
+          } else {
+            setState(() {
+              _isSaving = false;
+            });
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildConvertToOilpaintingl(){
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: RaisedButton(
+        color: Colors.blue,
+        textColor: Colors.white,
+        child: Text("Convert to oil paiting"),
+        onPressed: ()async{
+          setState(() {
+            _isSaving = true;
+          });
+          if(_image!=null){
+            Directory tempDir = await getTemporaryDirectory();
+            String tempPath = tempDir.path; 
+            _proceessedImage = await ImageProcessingTools.toOilPaiting(_image.path, tempPath);
+            setState(() {
+              _isSaving = false;
+            });
+          } else {
+            setState(() {
+              _isSaving = false;
+            });
+          }
+        },
+      ),
+    );
+  }
+
 }

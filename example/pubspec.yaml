@@ -17,6 +17,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   image_picker: ^0.5.3+1
+  path_provider: ^0.5.0+1
 
   image_processing_tools:
     path: ../

@@ -12,13 +12,73 @@ class ImageProcessingTools {
     return version;
   }
 
-  static Future<File> convertToGray(String filePath) async {
-    final File processedFile = await _channel.invokeMethod(
-      'convertToGray',
-      {
-        'filePath': filePath,
-      }
-    );
-    return processedFile;
+  static Future<String> detectCircle(String inputFilePath, String outputFilePath, minCircleRadius) async {
+    try{
+      final String processedFile = await _channel.invokeMethod(
+        'detectCircle',
+        {
+          'inputFilePath': inputFilePath,
+          'outputFilePath': outputFilePath,
+          'minCircleRadius': minCircleRadius,
+        }
+      );
+      print(processedFile);
+      return processedFile;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  static Future<String> toCartoon(String inputFilePath, String outputFilePath) async {
+    try{
+      final String processedFile = await _channel.invokeMethod(
+        'toCartoon',
+        {
+          'inputFilePath': inputFilePath,
+          'outputFilePath': outputFilePath,
+        }
+      );
+      print(processedFile);
+      return processedFile;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  static Future<String> toPencilSketch(String inputFilePath, String outputFilePath, bool isGrey) async {
+    try{
+      final String processedFile = await _channel.invokeMethod(
+        'toPencilSketch',
+        {
+          'inputFilePath': inputFilePath,
+          'outputFilePath': outputFilePath,
+          'isGrey': isGrey,
+        }
+      );
+      print(processedFile);
+      return processedFile;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+static Future<String> toOilPaiting(String inputFilePath, String outputFilePath) async {
+    try{
+      final String processedFile = await _channel.invokeMethod(
+        'toOilPaiting',
+        {
+          'inputFilePath': inputFilePath,
+          'outputFilePath': outputFilePath,
+        }
+      );
+      print(processedFile);
+      return processedFile;
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 }
